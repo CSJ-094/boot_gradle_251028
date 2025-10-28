@@ -1,0 +1,63 @@
+plugins {
+	id 'java'
+	id 'war' // JSP 프로젝트를 위해 war 플러그인을 적용합니다.
+	id 'org.springframework.boot' version '3.3.1' // Spring Boot 버전을 명시합니다.
+	id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'com.boot'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17) // Java 17 버전을 사용합니다.
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring Web MVC, 내장 Tomcat 등을 포함하는 웹 애플리케이션 개발을 위한 기본 의존성입니다.
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// 개발 편의성을 위한 devtools입니다. 코드 변경 시 자동 재시작 등의 기능을 제공합니다.
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// @Getter, @Setter, @Slf4j 등 어노테이션 기반으로 코드를 자동 생성해주는 라이브러리입니다.
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// JSP 파일을 서블릿으로 컴파일하고 실행하기 위한 JSP 템플릿 엔진입니다.
+	// providedRuntime으로 선언하여 내장 Tomcat을 사용할 때 Spring Boot가 버전을 관리하도록 합니다.
+	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+	// JSTL(JSP Standard Tag Library)을 사용하기 위한 의존성들입니다. (Spring Boot 3.x / Jakarta EE 9+ 기준)
+	// providedRuntime 'jakarta.servlet:jakarta.servlet-api'
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
+	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
+
+	// JUnit5, Mockito 등 테스트 관련 라이브러리를 포함합니다.
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+war {
+    enabled = false
+}
+
+bootWar {
+    enabled = true
+    mainClass = 'com.boot.BootGradle251028Application'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
